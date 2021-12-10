@@ -3,6 +3,7 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+import requests
 
 #Funcion para Extaccion de los equipos
 def Equipos(_indice):
@@ -166,6 +167,13 @@ for numeroPartido in range(1,CantidadPartidos()+1):
         partido = [EquipoVisitante,EquipoHome,JugadorVisitante,JugadorHome,CarrerasVisitante,CarrerasHome,Outs,
         PrimeraBase,SegundaBase,TerceraBase,inning,situacion]
         partidos.append(partido)
+
+    urls = "http://localhost/pizarra/scrapping/partidos.php"
+    infopartido = {'indice':numeroPartido,'EquipoVisitante': EquipoVisitante, 'EquipoHome': EquipoHome, 'JugadorVisitante': JugadorVisitante, 'JugadorHome': JugadorHome, 
+    'CarrerasVisitante': CarrerasVisitante, 'CarrerasHome': CarrerasHome, 'Outs': Outs, 'PrimeraBase': PrimeraBase, 'SegundaBase': SegundaBase, 
+    'TerceraBase': TerceraBase, 'inning': inning, 'situacion': situacion}
+    
+    response = requests.post(urls, data=infopartido)
 
 #Eliminamos a magallanes de la lista
 EliminaMagallanes(partidos)
