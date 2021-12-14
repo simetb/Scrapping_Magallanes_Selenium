@@ -124,11 +124,9 @@ def EliminaMagallanes(_partidos):
     return(_partidos)
     
 #-------------------------------------------------------Configuraciones Selenium
-PATH = Service("D:\Simet\Documents\chromedriver.exe") #Ruta del driver de GoogleChrome
+PATH = Service("C:\chromedriver.exe") #Ruta del driver de GoogleChrome
 driver = webdriver.Chrome(service = PATH) #Objeto con la direccion del driver (NO TOCAR)
 url = "https://www.lvbp.com/" #URL Objetivo
-#url = "file:///D:/Users/Simet/Desktop/Temis/Temis/3%20y%202%20base/LVBP.com%20__%20Liga%20Venezolana%20de%20Béisbol%20Profesional.html" #URL TEST
-
 driver.get(url) #Entrar a la URL objetivo
 
 #-------------------------------------------------------Logica de recolecta de datos
@@ -161,42 +159,25 @@ for numeroPartido in range(1,CantidadPartidos()+1):
         #Inicializacion de variables de subpagina
         JugadorVisitante,JugadorHome = Jugadores()
         Outs = CantidadOuts()
-        PrimeraBase = SegundaBase = TerceraBase = EnBase()
+        PrimeraBase,SegundaBase,TerceraBase = EnBase()
 
         #Creacion y Almacenamiento del partido
         partido = [EquipoVisitante,EquipoHome,JugadorVisitante,JugadorHome,CarrerasVisitante,CarrerasHome,Outs,
         PrimeraBase,SegundaBase,TerceraBase,inning,situacion]
         partidos.append(partido)
 
-    urls = "http://localhost/pizarra/scrapping/partidos.php"
+    urls = "http://192.168.4.100/pizarra/scrapping/partidos.php"
+
+    ##############QUERY ARRAY ENVIADO POR POST########################
     infopartido = {'indice':numeroPartido,'EquipoVisitante': EquipoVisitante, 'EquipoHome': EquipoHome, 'JugadorVisitante': JugadorVisitante, 'JugadorHome': JugadorHome, 
     'CarrerasVisitante': CarrerasVisitante, 'CarrerasHome': CarrerasHome, 'Outs': Outs, 'PrimeraBase': PrimeraBase, 'SegundaBase': SegundaBase, 
     'TerceraBase': TerceraBase, 'inning': inning, 'situacion': situacion}
     
     response = requests.post(urls, data=infopartido)
 
+    query = str(response.text) + "/n" 
+    #################################################################
+    
 #Eliminamos a magallanes de la lista
 EliminaMagallanes(partidos)
-
 driver.quit()#Cerrar la pagina
-
-########### EXPLICACION MATRIZ PARTIDOS ###############
-
-#partidos[NumeroPartido][CaracteristicasPartido] = ...
-#partidos[N][0] = EQUIPO VISITANTE
-#partidos[N][1] = EQUIPO HOME
-#partidos[N][2] = JUGADOR VISITANTE
-#partidos[N][3] = JUGADOR HOME
-#partidos[N][4] = CARRERAS VISITANTE
-#partidos[N][5] = CARRERAS HOME
-#partidos[N][6] = CANTIDAD OUTS DEL PARTIDO
-#partidos[N][7] = HOMBRE EN PRIMERA BASE 1=SI 0=NO
-#partidos[N][8] = HOMBRE EN SEGUNDA BASE 1=SI 0=NO
-#partidos[N][9] = HOMBRE EN TERCERA BASE 1=SI 0=NO
-#partidos[N][10] = N INNING
-
-#----SITUACION DEL PARTIDO
-
-#partidos[N][11] = SITUACION DEL PARTIDO, -1 = PARTIDO PAUSADO, DEMORADO, NO INICIADO
-#partidos[N][11] = SITUACION DEL PARTIDO, 0 = PARTIDO INICIADO, UBICACION INNING SUPERIOR
-#partidos[N][11] = SITUACION DEL PARTIDO, 1 = PARTIDO INICIADO, UBICACION INNING INFERIOR
