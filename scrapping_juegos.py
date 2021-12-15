@@ -41,10 +41,10 @@ def Estado(_indice):
             elif palabra == "inning":
                 if estadoPartido[2] == "▼":
                     inning = estadoPartido[1] 
-                    estadoInning = 1
+                    estadoInning = "baja"
                 else:
                     inning = estadoPartido[1] 
-                    estadoInning = 0
+                    estadoInning = "alta"
                 break
         else:
             inning = "X"
@@ -60,29 +60,42 @@ def CantidadPartidos():
 #Funcion para la cantidad de carreras del partido
 def Carreras(_indice):
     #Carreras Visitante
-    carrerasVisitante = driver.find_element(By.XPATH, "//div[@id='h_scoreboard']/div[@class='row m-t-sm']/div[" + str(_indice)+"]"+
+    carrerasHome = driver.find_element(By.XPATH, "//div[@id='h_scoreboard']/div[@class='row m-t-sm']/div[" + str(_indice)+"]"+
     "/table/tbody/tr[1]/td[2]").text
     #Carreras HomeClub
-    carrerasHome = driver.find_element(By.XPATH, "//div[@id='h_scoreboard']/div[@class='row m-t-sm']/div[" + str(_indice)+"]"+
+    carrerasVisitante = driver.find_element(By.XPATH, "//div[@id='h_scoreboard']/div[@class='row m-t-sm']/div[" + str(_indice)+"]"+
     "/table/tbody/tr[2]/td[2]").text
     return(carrerasHome,carrerasVisitante)
 
-#Funcion para saber los jugadores del partido
-def Jugadores():
+#Funcion para saber los jugadores numero del partido
+def JugadoresNumero():
     #Jugador Visitante
-    jugadorVisitante = driver.find_element(By.XPATH,"//div[@class = 'col-md-3 pbp-left-box m-b-md']/div[3]/div[2]/div/"+
+    jugadorPitcher = driver.find_element(By.XPATH,"//div[@class = 'col-md-3 pbp-left-box m-b-md']/div[3]/div[2]/div/"+
     "small").text
     #Jugador HomeClub
-    jugadorHome = driver.find_element(By.XPATH,"//div[@class = 'col-md-3 pbp-left-box m-b-md']/div[4]/div[2]/div/"+
+    jugadorBateador = driver.find_element(By.XPATH,"//div[@class = 'col-md-3 pbp-left-box m-b-md']/div[4]/div[2]/div/"+
     "small").text
     #Extrayendo el numero del jugador Visitante
-    jugadorVisitante = jugadorVisitante.split()
-    jugadorVisitante = jugadorVisitante[1][1:] #Ejemplo #22 = 22
+    jugadorPitcher = jugadorPitcher.split()
+    jugadorPitcher = jugadorPitcher[1][1:] #Ejemplo #22 = 22
     #Extrayendo el numero del jugador HomeClub
-    jugadorHome = jugadorHome.split()
-    jugadorHome = jugadorHome[1][1:]
-    return(jugadorVisitante,jugadorHome)
+    jugadorBateador = jugadorBateador.split()
+    jugadorBateador = jugadorBateador[1][1:]
+    return(jugadorPitcher,jugadorBateador)
 
+#Funcion para saber los jugadores nombres del partido
+def JugadoresNombre():
+    #Jugador Visitante Nombre
+    jugadorPitcher = driver.find_element(By.XPATH,"//div[@class = 'col-md-3 pbp-left-box m-b-md']/div[3]/div[2]/div/"+
+    "strong").text
+    #Jugador HomeClub Nombre
+    jugadorBateador = driver.find_element(By.XPATH,"//div[@class = 'col-md-3 pbp-left-box m-b-md']/div[4]/div[2]/div/"+
+    "strong").text
+
+    jugadorPitcher = "P: " + jugadorPitcher
+    jugadorBateador = "B: " + jugadorBateador
+    return(jugadorPitcher,jugadorBateador)
+    
 #Funcion para saber la cantidad de Outs por partido
 def CantidadOuts():
     #Outs del inning
@@ -156,8 +169,11 @@ for numeroPartido in range(1,CantidadPartidos()+1):
         + str(numeroPartido)+"]")
         PaginaPartido.click()#Entrada a SubPagina
 
-        #Inicializacion de variables de subpagina
-        JugadorVisitante,JugadorHome = Jugadores()
+        #Inicializacion de variables de subpagina y condicional de jugadores
+        if situacion == "baja":
+            JugadorVisitante,JugadorHome = JugadoresNombre()
+        else:
+            JugadorHome,JugadorVisitante = JugadoresNombre()
         Outs = CantidadOuts()
         PrimeraBase,SegundaBase,TerceraBase = EnBase()
 
@@ -169,13 +185,15 @@ for numeroPartido in range(1,CantidadPartidos()+1):
     urls = "http://192.168.4.100/pizarra/scrapping/partidos.php"
 
     ##############QUERY ARRAY ENVIADO POR POST########################
+    JugadorHome = ""
+    JugadorVisitante = ""
     infopartido = {'indice':numeroPartido,'EquipoVisitante': EquipoVisitante, 'EquipoHome': EquipoHome, 'JugadorVisitante': JugadorVisitante, 'JugadorHome': JugadorHome, 
     'CarrerasVisitante': CarrerasVisitante, 'CarrerasHome': CarrerasHome, 'Outs': Outs, 'PrimeraBase': PrimeraBase, 'SegundaBase': SegundaBase, 
     'TerceraBase': TerceraBase, 'inning': inning, 'situacion': situacion}
     
     response = requests.post(urls, data=infopartido)
 
-    query = str(response.text) + "/n" 
+    query = str(response.text) + "/n"
     #################################################################
     
 #Eliminamos a magallanes de la lista
