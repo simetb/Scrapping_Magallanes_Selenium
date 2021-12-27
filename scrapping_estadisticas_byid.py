@@ -5,6 +5,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 import re
 import time
+import requests
 
 #Funcion que ingresa a la pagina de Estadisticas
 def EstadisticaEquipo(_indice):
@@ -84,7 +85,11 @@ def DatosBateador(_indice):
             tresb = driver.find_element(By.XPATH,"//div[@id = 'bat']/table/tbody/tr["+ str(_indice + 1) +"]/td[8]").text
             #SF
             sf = driver.find_element(By.XPATH,"//div[@id = 'bat']/table/tbody/tr["+ str(_indice + 1) +"]/td[16]").text
-            return(posicion,ci,hr,peb,h,bb,vb,gp,dosb,tresb,sf)
+            #AVERAGE
+            ave = driver.find_element(By.XPATH,"//div[@id = 'bat']/table/tbody/tr["+ str(_indice + 1) +"]/td[17]").text[1:]
+            #SLUGGING
+            slg = driver.find_element(By.XPATH,"//div[@id = 'bat']/table/tbody/tr["+ str(_indice + 1) +"]/td[19]").text[1:]
+            return(posicion,ci,hr,peb,h,bb,vb,gp,dosb,tresb,sf,ave,slg)
         except:
             print("Error-Datos Bateador")
             time.sleep(1)
@@ -109,7 +114,9 @@ def DatosLanzador(_indice):
             bb = driver.find_element(By.XPATH,"//div[@id = 'pit' ]/table/tbody/tr["+str(_indice + 1)+"]/td[14]").text
             #CL
             cl = driver.find_element(By.XPATH,"//div[@id = 'pit' ]/table/tbody/tr["+str(_indice + 1)+"]/td[12]").text
-            return(posicion,ganados,perdidos,salvados,ip,k,bb,cl)
+            #EFE
+            efe = driver.find_element(By.XPATH,"//div[@id = 'pit' ]/table/tbody/tr["+str(_indice + 1)+"]/td[4]").text
+            return(posicion,ganados,perdidos,salvados,ip,k,bb,cl,efe)
         except:
             print("Error-Datos Lanzador")
             time.sleep(1)
@@ -144,22 +151,37 @@ def Vaciado(m):
             cont +=1
     return m
 
+#Funcion que da click en las estadisticas de la temporada
+def Fase_Temporada(_fase):
+    if _fase == "final":
+        driver.find_element(By.XPATH,"//a[@href = '#w']").click()
+    elif _fase == "semifinal":
+        driver.find_element(By.XPATH,"//a[@href = '#l']").click()
+    else:
+        driver.find_element(By.XPATH,"//a[@href = '#tr']").click()
+    
+
 #---------------------------------------------------Configuraciones Selenium
-PATH = Service("D:\Simet\Documents\chromedriver.exe") #Ruta del driver de GoogleChrome
+PATH = Service("C:\chromedriver.exe") #Ruta del driver de GoogleChrome
 options = webdriver.ChromeOptions()
 options.add_experimental_option('excludeSwitches', ['enable-logging'])#Desactivas los switches innecesarios
 driver = webdriver.Chrome(service = PATH,options=options) #Objeto con la direccion del driver (NO TOCAR)
 url = "https://www.lvbp.com/" #URL Objetivo
-
+urls = "http://192.168.4.100/pizarra/scrapping/estadisticas.php"
+array = {'proceso':1}
+response = requests.post(urls, data=array)
 
 #----------------------------------------Logica de Recolecta de datos 
 #Equipo a indice
 equipo = {"aguilas":0, "bravos":1, "cardenales":2, "caribes":3, "leones":4, "navegantes":5,"tiburones":6,"tigres":7}
 #Ids a buscar
-ids = [664306,999999,691908]#<----------------------------ID QUE SE VAN A BUSCAR
 
+results = response.text[:-1].split("-")#<----------------------------ID QUE SE VAN A BUSCAR
+print(results)
+ids = [int(x) for x in results]
 driver.get(url) #Entra a la URL Objetivo
-EstadisticaEquipo(equipo["aguilas"]) #Seleccionamos el equipo
+EstadisticaEquipo(equipo["navegantes"]) #Seleccionamos el equipo
+Fase_Temporada("semifinal")# Seleccionamos el estado de la temporada final semifinal o regular
 #Obtenemos los id para comparar
 nbateadores = len(driver.find_elements(By.XPATH,"//div[@id = 'bat']/table/tbody/tr")) - 1 #Cantidad de bateadores a evaluar
 idsBateadores  = RecolectaIdBateadores(nbateadores)
@@ -177,9 +199,11 @@ for k in range(len(ids)):
         if ids[k] != -1:
             encontrado = ComparaId(ids[k],idsBateadores[j])
             if encontrado:
-                posicion,ci,hr,peb,h,bb,vb,gp,dosb,tresb,sf = DatosBateador(j)#<----------------------RESULTADOS SI ES BATEADOR
+                posicion,ci,hr,peb,h,bb,vb,gp,dosb,tresb,sf,ave,slg = DatosBateador(j)#<----------------------RESULTADOS SI ES BATEADOR
+                estadisticas = {'proceso':2, 'posicion':posicion,'ci': ci, 'hr': hr, 'peb': peb, 'h': h, 'bb': bb, 'vb': vb, 'gp': gp, 'dosb': dosb, 'tresb': tresb, 'sf': sf,'ave' : ave,'slg' : slg,'id':ids[k]}
                 ids[k] = -1
                 idsBateadores[j] = -1
+                response = requests.post(urls, data=estadisticas)
                 break
 
     if not(encontrado):
@@ -188,7 +212,8 @@ for k in range(len(ids)):
             if ids[k] != -1:
                 encontrado = ComparaId(ids[k],idsLanzadores[j])
                 if encontrado:
-                    posicion,ganados,perdidos,salvados,ip,strikes,bb,cl = DatosLanzador(j)#<----------------------RESULTADO SI ES PITCHER
+                    posicion,ganados,perdidos,salvados,ip,strikes,bb,cl,efe = DatosLanzador(j)#<----------------------RESULTADO SI ES PITCHER
+                    estadisticas = {'proceso':2, 'posicion':posicion,'ganados': ganados, 'perdidos': perdidos, 'salvados': salvados, 'ip': ip, 'strikes': strikes, 'bb': bb, 'cl': cl, 'efe': efe,'id':ids[k]}
                     ids[k] = -1
                     idsLanzadores[j] = -1
                     break
@@ -229,7 +254,5 @@ if len(idsLanzadores) != 0:
                 print("ID: ",idsLanzadores[k]," - ", jugador)
                 break
 
-
-
-
-
+#Cerramos la pagina
+driver.quit()
