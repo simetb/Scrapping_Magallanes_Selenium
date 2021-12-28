@@ -21,29 +21,29 @@ def EstadisticaEquipo(_indice):
             time.sleep(1)
 
 #Funcion para Recolectar los Id de todos los bateadores
-def RecolectaIdBateadores(_nbateadores):
+def RecolectaIdBateadores(_nbateadores, _estado):
     while True:
         idBateadores = []
         try:
             for k in range(_nbateadores):
                 #Arma id
-                jugador = driver.find_element(By.XPATH,"//div[@id = 'bat']/table/tbody/tr["+ str(k + 1) +"]/td[1]/a")
+                jugador = driver.find_element(By.XPATH,"//div[@id = 'bat" + _estado + "']/table/tbody/tr["+ str(k + 1) +"]/td[1]/a")
                 id = jugador.get_attribute('href')
                 id = [int(s) for s in re.findall(r'-?\d+\.?\d*', id)]
-                idBateadores.append(id[0])
+                idBateadores.append(id[0])    
             return idBateadores
         except:
             print("Error-Bateadores")
             time.sleep(1)
 
 #Funcion para Recolectar los Id de todos los Lanzadores
-def RecolectaIdLanzadores(_nbateadores):
+def RecolectaIdLanzadores(_nbateadores, _estado):
     while True:
         try:
             idLanzadores = []
             for k in range(_nbateadores):
                 #Arma id
-                jugador = driver.find_element(By.XPATH,"//div[@id = 'pit']/table/tbody/tr["+ str(k + 1) +"]/td[1]/a")
+                jugador = driver.find_element(By.XPATH,"//div[@id = 'pit" + _estado + "']/table/tbody/tr["+ str(k + 1) +"]/td[1]/a")
                 id = jugador.get_attribute('href')
                 id = (([int(s) for s in re.findall(r'-?\d+\.?\d*', id)]))
                 idLanzadores.append(id[0])
@@ -60,86 +60,86 @@ def ComparaId(_id,_id2):
         return False
 
 #Funcion que recolecta los datos del bateador
-def DatosBateador(_indice):
+def DatosBateador(_indice,_estado):
     while True:
         try:
-            #POSICION
-            posicion = driver.find_element(By.XPATH,"//div[@id = 'bat']/table/tbody/tr["+ str(_indice + 1) +"]/td[2]").text
-            #CI
-            ci = driver.find_element(By.XPATH,"//div[@id = 'bat']/table/tbody/tr["+ str(_indice + 1) +"]/td[10]").text
-            #HR
-            hr = driver.find_element(By.XPATH,"//div[@id = 'bat']/table/tbody/tr["+ str(_indice + 1) +"]/td[9]").text
-            #PEB
-            peb = driver.find_element(By.XPATH,"//div[@id = 'bat']/table/tbody/tr["+ str(_indice + 1) +"]/td[18]").text
-            #H
-            h = driver.find_element(By.XPATH,"//div[@id = 'bat']/table/tbody/tr["+ str(_indice + 1) +"]/td[6]").text
-            #BB
-            bb = driver.find_element(By.XPATH,"//div[@id = 'bat']/table/tbody/tr["+ str(_indice + 1) +"]/td[12]").text
-            #VB
-            vb = driver.find_element(By.XPATH,"//div[@id = 'bat']/table/tbody/tr["+ str(_indice + 1) +"]/td[4]").text
-            #GP
-            gp = driver.find_element(By.XPATH,"//div[@id = 'bat']/table/tbody/tr["+ str(_indice + 1) +"]/td[21]").text
-            #2B
-            dosb = driver.find_element(By.XPATH,"//div[@id = 'bat']/table/tbody/tr["+ str(_indice + 1) +"]/td[7]").text
-            #3B
-            tresb = driver.find_element(By.XPATH,"//div[@id = 'bat']/table/tbody/tr["+ str(_indice + 1) +"]/td[8]").text
-            #SF
-            sf = driver.find_element(By.XPATH,"//div[@id = 'bat']/table/tbody/tr["+ str(_indice + 1) +"]/td[16]").text
-            #AVERAGE
-            ave = driver.find_element(By.XPATH,"//div[@id = 'bat']/table/tbody/tr["+ str(_indice + 1) +"]/td[17]").text[1:]
-            #SLUGGING
-            slg = driver.find_element(By.XPATH,"//div[@id = 'bat']/table/tbody/tr["+ str(_indice + 1) +"]/td[19]").text[1:]
+                #POSICION
+                posicion = driver.find_element(By.XPATH,"//div[@id = 'bat" + _estado + "']/table/tbody/tr["+ str(_indice + 1) +"]/td[2]").text
+                #CI
+                ci = driver.find_element(By.XPATH,"//div[@id = 'bat" + _estado + "']/table/tbody/tr["+ str(_indice + 1) +"]/td[10]").text
+                #HR
+                hr = driver.find_element(By.XPATH,"//div[@id = 'bat" + _estado + "']/table/tbody/tr["+ str(_indice + 1) +"]/td[9]").text
+                #PEB
+                peb = driver.find_element(By.XPATH,"//div[@id = 'bat" + _estado + "']/table/tbody/tr["+ str(_indice + 1) +"]/td[18]").text[1:]
+                #H
+                h = driver.find_element(By.XPATH,"//div[@id = 'bat" + _estado + "']/table/tbody/tr["+ str(_indice + 1) +"]/td[6]").text
+                #BB
+                bb = driver.find_element(By.XPATH,"//div[@id = 'bat" + _estado + "']/table/tbody/tr["+ str(_indice + 1) +"]/td[12]").text
+                #VB
+                vb = driver.find_element(By.XPATH,"//div[@id = 'bat" + _estado + "']/table/tbody/tr["+ str(_indice + 1) +"]/td[4]").text
+                #GP
+                gp = driver.find_element(By.XPATH,"//div[@id = 'bat" + _estado + "']/table/tbody/tr["+ str(_indice + 1) +"]/td[21]").text
+                #2B
+                dosb = driver.find_element(By.XPATH,"//div[@id = 'bat" + _estado + "']/table/tbody/tr["+ str(_indice + 1) +"]/td[7]").text
+                #3B
+                tresb = driver.find_element(By.XPATH,"//div[@id = 'bat" + _estado + "']/table/tbody/tr["+ str(_indice + 1) +"]/td[8]").text
+                #SF
+                sf = driver.find_element(By.XPATH,"//div[@id = 'bat" + _estado + "']/table/tbody/tr["+ str(_indice + 1) +"]/td[16]").text
+                #AVERAGE
+                ave = driver.find_element(By.XPATH,"//div[@id = 'bat" + _estado + "']/table/tbody/tr["+ str(_indice + 1) +"]/td[17]").text[1:]
+                #SLUGGING
+                slg = driver.find_element(By.XPATH,"//div[@id = 'bat" + _estado + "']/table/tbody/tr["+ str(_indice + 1) +"]/td[19]").text[1:]
             return(posicion,ci,hr,peb,h,bb,vb,gp,dosb,tresb,sf,ave,slg)
         except:
             print("Error-Datos Bateador")
             time.sleep(1)
 
 #Funcion que recolecta los datos del Lanzador
-def DatosLanzador(_indice):
+def DatosLanzador(_indice,_estado):
     while True:
         try:
             #POSICION
             posicion = "P"
             #GANADOS
-            ganados = driver.find_element(By.XPATH,"//div[@id = 'pit' ]/table/tbody/tr["+str(_indice + 1)+"]/td[2]").text
+            ganados = driver.find_element(By.XPATH,"//div[@id = 'pit" + _estado + "' ]/table/tbody/tr["+str(_indice + 1)+"]/td[2]").text
             #PERDIDOS
-            perdidos = driver.find_element(By.XPATH,"//div[@id = 'pit' ]/table/tbody/tr["+str(_indice + 1)+"]/td[3]").text
+            perdidos = driver.find_element(By.XPATH,"//div[@id = 'pit" + _estado + "' ]/table/tbody/tr["+str(_indice + 1)+"]/td[3]").text
             #SALVADO
-            salvados = driver.find_element(By.XPATH,"//div[@id = 'pit' ]/table/tbody/tr["+str(_indice + 1)+"]/td[8]").text
+            salvados = driver.find_element(By.XPATH,"//div[@id = 'pit" + _estado + "' ]/table/tbody/tr["+str(_indice + 1)+"]/td[8]").text
             #IP
-            ip = driver.find_element(By.XPATH,"//div[@id = 'pit' ]/table/tbody/tr["+str(_indice + 1)+"]/td[9]").text
+            ip = driver.find_element(By.XPATH,"//div[@id = 'pit" + _estado + "' ]/table/tbody/tr["+str(_indice + 1)+"]/td[9]").text
             #STRIKES
-            k = driver.find_element(By.XPATH,"//div[@id = 'pit' ]/table/tbody/tr["+str(_indice + 1)+"]/td[17]").text
+            k = driver.find_element(By.XPATH,"//div[@id = 'pit" + _estado + "' ]/table/tbody/tr["+str(_indice + 1)+"]/td[17]").text
             #BB
-            bb = driver.find_element(By.XPATH,"//div[@id = 'pit' ]/table/tbody/tr["+str(_indice + 1)+"]/td[14]").text
+            bb = driver.find_element(By.XPATH,"//div[@id = 'pit" + _estado + "' ]/table/tbody/tr["+str(_indice + 1)+"]/td[14]").text
             #CL
-            cl = driver.find_element(By.XPATH,"//div[@id = 'pit' ]/table/tbody/tr["+str(_indice + 1)+"]/td[12]").text
+            cl = driver.find_element(By.XPATH,"//div[@id = 'pit" + _estado + "' ]/table/tbody/tr["+str(_indice + 1)+"]/td[12]").text
             #EFE
-            efe = driver.find_element(By.XPATH,"//div[@id = 'pit' ]/table/tbody/tr["+str(_indice + 1)+"]/td[4]").text
+            efe = driver.find_element(By.XPATH,"//div[@id = 'pit" + _estado + "' ]/table/tbody/tr["+str(_indice + 1)+"]/td[4]").text
             return(posicion,ganados,perdidos,salvados,ip,k,bb,cl,efe)
         except:
             print("Error-Datos Lanzador")
             time.sleep(1)
 
 #Funcion para seleccionar picheo en el menu
-def SeleccionaPicheo():
+def SeleccionaPicheo(_estado):
     while True:
         try:
-            driver.find_element(By.XPATH,"//a[@href='#pit']").click()
+            driver.find_element(By.XPATH,"//a[@href='#pit" + _estado + "']").click()
             time.sleep(1)
             break
         except:
-            print("Error")
+            print("Error-Picher")
 
 #Funcion para seleccionar bateo en el menu
-def SeleccionaBateo():
+def SeleccionaBateo(_estado):
     while True:
         try:
-            driver.find_element(By.XPATH,"//a[@href='#bat']").click()
+            driver.find_element(By.XPATH,"//a[@href='#bat" + _estado + "']").click()
             time.sleep(1)
             break
         except:
-            print("Error")
+            print("Error-Bateo")
 
 #Funcion para Vaciar los elementos encontrados del vector
 def Vaciado(m):
@@ -155,10 +155,14 @@ def Vaciado(m):
 def Fase_Temporada(_fase):
     if _fase == "final":
         driver.find_element(By.XPATH,"//a[@href = '#w']").click()
+        return'Sin definir'
+    
     elif _fase == "semifinal":
         driver.find_element(By.XPATH,"//a[@href = '#l']").click()
+        return '_l'
     else:
         driver.find_element(By.XPATH,"//a[@href = '#tr']").click()
+        return ''
     
 
 #---------------------------------------------------Configuraciones Selenium
@@ -181,41 +185,42 @@ print(results)
 ids = [int(x) for x in results]
 driver.get(url) #Entra a la URL Objetivo
 EstadisticaEquipo(equipo["navegantes"]) #Seleccionamos el equipo
-Fase_Temporada("semifinal")# Seleccionamos el estado de la temporada final semifinal o regular
+estado = Fase_Temporada("semifinal")# Seleccionamos el estado de la temporada final semifinal o regular
 #Obtenemos los id para comparar
-nbateadores = len(driver.find_elements(By.XPATH,"//div[@id = 'bat']/table/tbody/tr")) - 1 #Cantidad de bateadores a evaluar
-idsBateadores  = RecolectaIdBateadores(nbateadores)
-copiaBateadores = RecolectaIdBateadores(nbateadores)
-SeleccionaPicheo()
-nlanzadores = len(driver.find_elements(By.XPATH,"//div[@id = 'pit' ]/table/tbody/tr")) - 3 #Cantidad de lanzadores a evaluar
-idsLanzadores  = RecolectaIdLanzadores(nlanzadores)
-copiaLanzadores = RecolectaIdLanzadores(nlanzadores)  
+nbateadores = len(driver.find_elements(By.XPATH,"//div[@id = 'bat" + estado + "']/table/tbody/tr")) - 1 #Cantidad de bateadores a evaluar
+idsBateadores  = RecolectaIdBateadores(nbateadores,estado)
+copiaBateadores = RecolectaIdBateadores(nbateadores,estado)
+SeleccionaPicheo(estado)
+nlanzadores = len(driver.find_elements(By.XPATH,"//div[@id = 'pit" + estado + "']/table/tbody/tr")) - 3 #Cantidad de lanzadores a evaluar
+idsLanzadores  = RecolectaIdLanzadores(nlanzadores,estado)
+copiaLanzadores = RecolectaIdLanzadores(nlanzadores,estado)  
 
 ##########################PROCESO###############################
 for k in range(len(ids)):
-    SeleccionaBateo()
+    SeleccionaBateo(estado)
     encontrado = False
     for j in range(nbateadores):
         if ids[k] != -1:
             encontrado = ComparaId(ids[k],idsBateadores[j])
             if encontrado:
-                posicion,ci,hr,peb,h,bb,vb,gp,dosb,tresb,sf,ave,slg = DatosBateador(j)#<----------------------RESULTADOS SI ES BATEADOR
+                posicion,ci,hr,peb,h,bb,vb,gp,dosb,tresb,sf,ave,slg = DatosBateador(j,estado)#<----------------------RESULTADOS SI ES BATEADOR
                 estadisticas = {'proceso':2, 'posicion':posicion,'ci': ci, 'hr': hr, 'peb': peb, 'h': h, 'bb': bb, 'vb': vb, 'gp': gp, 'dosb': dosb, 'tresb': tresb, 'sf': sf,'ave' : ave,'slg' : slg,'id':ids[k]}
                 ids[k] = -1
                 idsBateadores[j] = -1
-                response = requests.post(urls, data=estadisticas)
+                #response = requests.post(urls, data=estadisticas)
                 break
 
     if not(encontrado):
-        SeleccionaPicheo()
+        SeleccionaPicheo(estado)
         for j in range(nlanzadores):
             if ids[k] != -1:
                 encontrado = ComparaId(ids[k],idsLanzadores[j])
                 if encontrado:
-                    posicion,ganados,perdidos,salvados,ip,strikes,bb,cl,efe = DatosLanzador(j)#<----------------------RESULTADO SI ES PITCHER
+                    posicion,ganados,perdidos,salvados,ip,strikes,bb,cl,efe = DatosLanzador(j,estado)#<----------------------RESULTADO SI ES PITCHER
                     estadisticas = {'proceso':2, 'posicion':posicion,'ganados': ganados, 'perdidos': perdidos, 'salvados': salvados, 'ip': ip, 'strikes': strikes, 'bb': bb, 'cl': cl, 'efe': efe,'id':ids[k]}
                     ids[k] = -1
                     idsLanzadores[j] = -1
+                    #response = requests.post(urls, data=estadisticas)
                     break
 
 #VACIAR ELEMENTOS ENCONTRADOS
@@ -230,27 +235,27 @@ if len(ids) != 0:
 
 #ELEMENTOS SOBRANTES DE BATEADORES
 if len(idsBateadores) != 0:
-    SeleccionaBateo()
+    SeleccionaBateo(estado)
     print("\nAlgunos ids no fueron buscados en la liga BATEADORES ...")
     for k in range(len(idsBateadores)):
         encontrado = False
         for j in range(nbateadores):
             encontrado = ComparaId(idsBateadores[k], copiaBateadores[j])
             if encontrado:
-                jugador = driver.find_element(By.XPATH,"//div[@id = 'bat']/table/tbody/tr["+ str(j+1) +"]/td[1]/a").text
+                jugador = driver.find_element(By.XPATH,"//div[@id = 'bat" + estado + "']/table/tbody/tr["+ str(j+1) +"]/td[1]/a").text
                 print("ID: ",idsBateadores[k]," - ", jugador)
                 break
 
 #ELEMENTOS SOBRANTES LANZADORES
 if len(idsLanzadores) != 0:
-    SeleccionaPicheo()
+    SeleccionaPicheo(estado)
     print("\nAlgunos ids no fueron buscados en la liga LANZADORES...")
     for k in range(len(idsLanzadores)):
         encontrado = False
         for j in range(nlanzadores):
             encontrado = ComparaId(idsLanzadores[k], copiaLanzadores[j])
             if encontrado:
-                jugador = driver.find_element(By.XPATH,"//div[@id = 'pit']/table/tbody/tr["+ str(j+1) +"]/td[1]/a").text
+                jugador = driver.find_element(By.XPATH,"//div[@id = 'pit" + estado + "']/table/tbody/tr["+ str(j+1) +"]/td[1]/a").text
                 print("ID: ",idsLanzadores[k]," - ", jugador)
                 break
 
