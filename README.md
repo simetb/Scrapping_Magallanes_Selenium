@@ -1,4 +1,4 @@
-# Scrapping_Magallanes_Selenium
+# Scrapping Magallanes Selenium
 System developed in python to extract information from Beisball page and optimize the Jose Bernardo Perez Stadium Systems.
 
 - Proyects Settings
