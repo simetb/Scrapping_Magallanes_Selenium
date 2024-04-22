@@ -1,12 +1,11 @@
 # Scrapping Magallanes Selenium
-System developed in python to extract information from Beisball page and optimize the Jose Bernardo Perez Stadium Systems.
 
-- Proyects Settings
-for the system to work you just need specify the  PATH from the Selenium GoogleChrome Driver.
+This Python system is designed to extract information from baseball pages and optimize the Jose Bernardo Perez Stadium systems.
 
-CHECK SELENIUM DOCS:
-```
-  PATH = Service() #Google Driver Selenium Path
-```
-CHECK SELENIUM DOCS: https://www.selenium.dev/documentation/webdriver/)https://www.selenium.dev/documentation/webdriver/
+## Project Settings
+To make the system work, you only need to specify the PATH to the Selenium Google Chrome Driver.
 
+```python
+PATH = Service() # Google Chrome Selenium Driver Path
+
+For more information, check the Selenium documentation: [Selenium WebDriver Documentation](https://www.selenium.dev/documentation/webdriver/)
